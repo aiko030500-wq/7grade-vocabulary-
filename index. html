@@ -1,0 +1,17 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <title>AI Bayan · Excel 7 · Module 1</title>
+  <meta name="theme-color" content="#0aa35f" />
+  <link rel="stylesheet" href="styles.css?v=1">
+</head>
+<body>
+  <div id="app"></div>
+
+  <!-- ВАЖНО: data.js ПЕРВЫМ -->
+  <script src="data.js?v=1"></script>
+  <script src="app.js?v=1"></script>
+</body>
+</html>
