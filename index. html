@@ -3,15 +3,237 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
-  <title>AI Bayan · Excel 7 · Module 1</title>
+  <title>AI Bayan · Excel 7 · M1 L1</title>
   <meta name="theme-color" content="#0aa35f" />
-  <link rel="stylesheet" href="styles.css?v=1">
+  <style>
+    :root{--green:#0aa35f;--bg:#f4fff8;--card:#fff;--text:#0b2b1b;--muted:#587a69;--border:#d8f2e5;--danger:#c62828;--shadow:0 10px 30px rgba(0,0,0,.08);--r:18px}
+    *{box-sizing:border-box;margin:0;padding:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial}
+    body{background:var(--bg);color:var(--text)}
+    .wrap{max-width:980px;margin:0 auto;padding:14px}
+    .topbar{position:sticky;top:0;z-index:5;background:rgba(244,255,248,.9);backdrop-filter:blur(8px);border-bottom:1px solid var(--border)}
+    .toprow{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:12px 14px}
+    .brand h1{font-size:16px;line-height:1.1}
+    .brand small{display:block;color:var(--muted);font-size:12px;margin-top:2px}
+    .actions{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}
+    .btn{border:1px solid var(--border);background:var(--card);border-radius:999px;padding:10px 12px;font-weight:700;cursor:pointer;box-shadow:0 4px 14px rgba(0,0,0,.05)}
+    .btn.primary{background:linear-gradient(135deg,#0aa35f,#0ed07a);color:#fff;border:none}
+    .btn.danger{background:#fff;color:var(--danger);border-color:#ffd0d0}
+    .grid{display:grid;grid-template-columns:1.1fr .9fr;gap:12px;margin-top:12px}
+    @media (max-width:900px){.grid{grid-template-columns:1fr}}
+    .card{background:var(--card);border:1px solid var(--border);border-radius:var(--r);box-shadow:var(--shadow);overflow:hidden}
+    .card .hd{padding:12px 14px;display:flex;align-items:center;justify-content:space-between;gap:10px;border-bottom:1px solid var(--border)}
+    .badge{padding:6px 10px;border-radius:999px;background:#eafff4;border:1px solid var(--border);color:var(--green);font-weight:800;font-size:12px}
+    .card .bd{padding:14px}
+    .h2{font-size:16px}
+    .muted{color:var(--muted);font-size:13px}
+    .wordCard{display:grid;grid-template-columns:96px 1fr;gap:12px;padding:12px;border:1px solid var(--border);border-radius:16px;background:#fbfffd}
+    .pic{width:96px;height:96px;border-radius:16px;border:1px solid var(--border);background:linear-gradient(135deg,#eafff4,#fff);display:flex;align-items:center;justify-content:center;font-size:42px}
+    .wordMain{display:flex;align-items:flex-start;justify-content:space-between;gap:10px}
+    .wordMain b{font-size:18px}
+    .wordMain .ru{color:var(--muted);font-weight:700;margin-top:4px}
+    .example{margin-top:8px;color:#244b3a;font-size:13px}
+    .smallrow{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+    .q{padding:12px;border:1px solid var(--border);border-radius:16px;background:#fbfffd}
+    .q .qtop{display:flex;align-items:center;justify-content:space-between;gap:10px}
+    .opt{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}
+    @media (max-width:420px){.opt{grid-template-columns:1fr}}
+    .choice{padding:10px 12px;border-radius:14px;border:1px solid var(--border);background:#fff;cursor:pointer;font-weight:800;text-align:left}
+    .result{margin-top:10px;font-weight:900;display:flex;align-items:center;gap:8px;min-height:22px}
+    .ok{color:var(--green)}
+    .no{color:var(--danger)}
+    .starBurst{display:inline-block;animation:pop .5s ease both}
+    @keyframes pop{0%{transform:scale(.7);opacity:0}70%{transform:scale(1.2);opacity:1}100%{transform:scale(1);opacity:1}}
+    .input{width:100%;padding:12px 12px;border-radius:14px;border:1px solid var(--border);outline:none;font-size:15px;font-weight:700}
+    .input:focus{border-color:#9de8c7;box-shadow:0 0 0 4px rgba(14,208,122,.12)}
+    .hr{height:1px;background:var(--border);margin:12px 0}
+    .footer{margin:14px 0 6px;display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;color:var(--muted);font-size:12px}
+    .err{white-space:pre-wrap;background:#fff3f3;border:1px solid #ffd0d0;border-radius:14px;padding:10px;color:#7a1c1c;font-weight:700}
+  </style>
 </head>
 <body>
-  <div id="app"></div>
+<div id="app"></div>
 
-  <!-- ВАЖНО: data.js ПЕРВЫМ -->
-  <script src="data.js?v=1"></script>
-  <script src="app.js?v=1"></script>
+<script>
+  // SAFE error viewer (если есть ошибка — покажет текст)
+  window.addEventListener("error", (e)=>{
+    const el = document.getElementById("app");
+    el.innerHTML = "<div class='wrap'><div class='card'><div class='hd'><div class='h2'>Ошибка</div><span class='badge'>Debug</span></div><div class='bd'><div class='err'>"+(e.message||e.error||"unknown")+"\n"+(e.filename||"")+(e.lineno?(":"+e.lineno):"")+"</div><div class='muted' style='margin-top:10px'>Сделай скрин и пришли мне — я сразу исправлю.</div></div></div></div>";
+  });
+
+  const LS={get:(k,d)=>{try{return JSON.parse(localStorage.getItem(k))??d}catch{return d}},set:(k,v)=>localStorage.setItem(k,JSON.stringify(v))};
+
+  const APP_DATA={
+    appTitle:"AI Bayan · Excel 7",
+    moduleTitle:"Module 1 — Hobbies & Leisure",
+    lessonTitle:"Lesson 1 — Indoor hobbies",
+    words:[
+      {id:"w1",en:"play chess",ru:"играть в шахматы",emoji:"♟️",ex:"I like playing chess in my free time."},
+      {id:"w2",en:"play video games",ru:"играть в видеоигры",emoji:"🎮",ex:"My brother plays video games after school."},
+      {id:"w3",en:"read books",ru:"читать книги",emoji:"📚",ex:"I read books every evening."},
+      {id:"w4",en:"draw pictures",ru:"рисовать",emoji:"🎨",ex:"She draws pictures in her notebook."},
+      {id:"w5",en:"listen to music",ru:"слушать музыку",emoji:"🎧",ex:"I listen to music when I do homework."},
+      {id:"w6",en:"watch films",ru:"смотреть фильмы",emoji:"🎬",ex:"We watch films on weekends."},
+      {id:"w7",en:"take photos",ru:"фотографировать",emoji:"📷",ex:"I take photos when I travel."},
+      {id:"w8",en:"surf the Internet",ru:"сидеть в интернете",emoji:"🌐",ex:"He surfs the Internet for information."},
+      {id:"w9",en:"free time",ru:"свободное время",emoji:"🕒",ex:"In my free time, I read books."},
+      {id:"w10",en:"activity",ru:"занятие",emoji:"✅",ex:"This activity is useful for me."},
+      {id:"w11",en:"relaxing",ru:"расслабляющий",emoji:"😌",ex:"Reading is relaxing."},
+      {id:"w12",en:"exciting",ru:"захватывающий",emoji:"🤩",ex:"This game is exciting!"}
+    ],
+    guess:[
+      {id:"g1",wordId:"w1",options:["play chess","read books","watch films","take photos"]},
+      {id:"g2",wordId:"w5",options:["listen to music","surf the Internet","activity","free time"]},
+      {id:"g3",wordId:"w7",options:["take photos","play video games","draw pictures","exciting"]}
+    ]
+  };
+
+  const KEY={stars:"aib7_demo_stars",done:"aib7_demo_done",seen:"aib7_demo_seen"};
+  const state={screen:"menu",tab:"guess",i:0};
+
+  const addStars=(n)=>LS.set(KEY.stars,(LS.get(KEY.stars,0)+n));
+  const stars=()=>LS.get(KEY.stars,0);
+  const done=(id)=>!!LS.get(KEY.done,{})[id];
+  const setDone=(id)=>{const d=LS.get(KEY.done,{});d[id]=true;LS.set(KEY.done,d);};
+  const markSeen=(id)=>{const s=LS.get(KEY.seen,{});if(!s[id]){s[id]=true;LS.set(KEY.seen,s);addStars(1);}};
+
+  function speak(text){
+    try{const u=new SpeechSynthesisUtterance(text);u.lang="en-US";u.rate=.95;speechSynthesis.cancel();speechSynthesis.speak(u);}catch(e){}
+  }
+
+  function render(){
+    const d=APP_DATA;
+    const app=document.getElementById("app");
+    app.innerHTML=`
+      <div class="topbar">
+        <div class="toprow">
+          <div class="brand">
+            <div>
+              <h1>${d.appTitle}</h1>
+              <small>${d.moduleTitle} · ${d.lessonTitle}</small>
+            </div>
+          </div>
+          <div class="actions">
+            <button class="btn" data-act="menu">🏠 Меню</button>
+            <button class="btn primary">⭐ ${stars()}</button>
+            <button class="btn danger" data-act="reset">Сброс</button>
+          </div>
+        </div>
+      </div>
+
+      ${state.screen==="menu" ? `
+        <div class="wrap">
+          <div class="grid">
+            <div class="card">
+              <div class="hd"><div class="h2">Lesson 1 · Indoor hobbies</div><span class="badge">Module 1</span></div>
+              <div class="bd">
+                <div class="q">
+                  <div class="qtop"><b>Start</b><span class="badge">12 words</span></div>
+                  <div class="muted" style="margin-top:8px">Нажми “Открыть урок”. Если открылось — значит всё ок ✅</div>
+                </div>
+                <div class="smallrow" style="margin-top:10px">
+                  <button class="btn primary" data-act="lesson">▶️ Открыть урок</button>
+                </div>
+                <div class="footer"><div>Сохранение ⭐ в телефоне</div><div>AI Bayan · Grade 7</div></div>
+              </div>
+            </div>
+
+            <div class="card">
+              <div class="hd"><div class="h2">Trainer</div><span class="badge">Guess</span></div>
+              <div class="bd">${renderGuess()}</div>
+            </div>
+          </div>
+        </div>
+      ` : `
+        <div class="wrap">
+          <div class="grid">
+            <div class="card">
+              <div class="hd"><div class="h2">📚 Visual Vocabulary</div><span class="badge">${state.i+1}/${d.words.length}</span></div>
+              <div class="bd">
+                ${renderWord()}
+              </div>
+            </div>
+
+            <div class="card">
+              <div class="hd"><div class="h2">🧠 Guess the word</div><span class="badge">+1 ⭐</span></div>
+              <div class="bd">${renderGuess()}</div>
+            </div>
+          </div>
+        </div>
+      `}
+    `;
+  }
+
+  function renderWord(){
+    const d=APP_DATA, w=d.words[state.i];
+    setTimeout(()=>markSeen(w.id),0);
+    return `
+      <div class="wordCard">
+        <div class="pic">${w.emoji}</div>
+        <div>
+          <div class="wordMain">
+            <div>
+              <b>${w.en}</b>
+              <div class="ru">${w.ru}</div>
+            </div>
+            <div class="smallrow"><button class="btn" data-act="speak" data-t="${w.en}">🔊</button></div>
+          </div>
+          <div class="example">Example: ${w.ex}</div>
+          <div class="smallrow">
+            <button class="btn" data-act="prev">⬅️</button>
+            <button class="btn" data-act="next">➡️</button>
+          </div>
+          <div class="muted" style="margin-top:10px">⭐ За первый просмотр слова: +1</div>
+        </div>
+      </div>
+    `;
+  }
+
+  function renderGuess(){
+    const d=APP_DATA;
+    return d.guess.map(q=>{
+      const w=d.words.find(x=>x.id===q.wordId);
+      const ans=w.en.toLowerCase();
+      const locked=done(q.id);
+      const opts=[...q.options].sort(()=>Math.random()-0.5);
+      return `
+        <div class="q" style="margin-bottom:10px">
+          <div class="qtop"><b>Guess</b><span class="badge">${locked?"locked":"+1 ⭐"}</span></div>
+          <div class="pic" style="margin-top:10px;width:100%;height:80px">${w.emoji}</div>
+          <div class="opt">
+            ${opts.map(o=>`
+              <button class="choice" data-act="guess" data-id="${q.id}" data-ans="${ans}" data-pick="${o.toLowerCase()}" ${locked?"disabled":""}>${o}</button>
+            `).join("")}
+          </div>
+          <div class="result" id="res_${q.id}"></div>
+        </div>
+      `;
+    }).join("");
+  }
+
+  document.addEventListener("click",(e)=>{
+    const b=e.target.closest("[data-act]"); if(!b) return;
+    const act=b.dataset.act;
+
+    if(act==="menu"){ state.screen="menu"; render(); }
+    if(act==="lesson"){ state.screen="lesson"; render(); }
+    if(act==="prev"){ state.i=(state.i-1+APP_DATA.words.length)%APP_DATA.words.length; render(); }
+    if(act==="next"){ state.i=(state.i+1)%APP_DATA.words.length; render(); }
+    if(act==="speak"){ speak(b.dataset.t||""); }
+
+    if(act==="reset"){ localStorage.removeItem(KEY.stars); localStorage.removeItem(KEY.done); localStorage.removeItem(KEY.seen); render(); }
+
+    if(act==="guess"){
+      const id=b.dataset.id; if(done(id)) return;
+      setDone(id);
+      const ok=(b.dataset.pick===b.dataset.ans);
+      const res=document.getElementById("res_"+id);
+      if(ok){ res.innerHTML=`<span class="ok">✔ Правильно</span> <span class="starBurst">⭐</span>`; addStars(1); }
+      else { res.innerHTML=`<span class="no">✖ Неверно</span>`; }
+      render();
+    }
+  });
+
+  render();
+</script>
 </body>
 </html>
